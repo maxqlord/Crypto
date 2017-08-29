@@ -9,7 +9,7 @@ while True:
   print(user_input.count('e'))
   print(''.join(reversed(user_input)))
   if user_input == "DOUBLE":
-    print(user_input)
+    print(user_input+user_input)
   print(user_input.replace('s','*'))
   print(user_input.upper())
   if len(user_input) > 50:
