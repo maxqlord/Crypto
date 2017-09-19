@@ -1,4 +1,5 @@
 # vigenere.py
+from collections import Counter
 def c2i(c, alphabet):
     return alphabet.find(c)
 
@@ -40,8 +41,24 @@ def vigenere_decode(ciphertext, key, alpha):
         plaintext += i2c(coded_index, alpha)
         key_index+=1
     return plaintext
+
+def index_of_coincidence(ciphertext, alpha):
+    c = Counter(ciphertext)
+    sum_probs = 0
+    for char in alpha:
+        sum_probs += c[char] * (c[char] - 1)
+    return sum_probs/(len(ciphertext) * (len(ciphertext)-1))
+
 def main():
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     print(vigenere_encode("THISISATEST", "KEY", alpha))
     print(vigenere_decode("KIBHGFFMSTIJUIVL", "CIPHER", alpha))
+    
+    std_freq = [.0817, .0149, .0278, .0425, .1270, .0223, .0202, .0609, .0697, .0015, .0077, .0403, .0241, .0675, .0751, .0193, .0010, .0599, .0633, .0906, .0276, .0098, .0236, .0015, .0197, .0007]
+    random = sum([x**2 for x in std_freq])
+    
+
+    
+    print(random)
+    print(index_of_coincidence("UZRZEGNJENVLISEXRHLYPYEGTESBJHJCSBPTGDYFXXBHEEIFTCCHVRKPNHWXPCTUQTGDJHTBIPRFEMJCNHVTCFSAIIJENREGSALHXHWZWRZXGTTVWGDHTEYXISAGQTCJPRSIAPTUMGZALHXHHSOHPWCZLBRZTCBRGHCDIQIKTOAAEFTOPYEGTENRAIALNRXLPCEPYKGPNGPRQPIAKWXDCBZXGPDNRWXEIFZXGJLVOXAJTUEMBLNLQHGPWVPEQPIAXATYENVYJEUEI",alpha))
 main()
