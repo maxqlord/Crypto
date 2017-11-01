@@ -85,6 +85,14 @@ def affine_bigraph_decode(text, alpha, a, b):
     return plaintext
 def equation_solve(a,b):
     return np.linalg.solve(a,b)
+#finds transformation coefficients given encoding
+def bigraph_coefficients(plaintext, ciphertext, alpha):
+    for a in range(0, 500):
+        for b in range(0,500):
+            if(affine_bigraph_encode(plaintext, alpha, a, b) == ciphertext):
+                return a,b
+    return -1
+    
 def main():
     #alpha2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?,."
     #print(affine_encode("GOODMORNING!", alpha, 7, 8))
@@ -99,11 +107,17 @@ def main():
     print(affine_decode("FYGTGXKVYNPEPSXGLIEDQYWJLEIGWCQYTHQJQCPYLWPYCHQDY", alpha, 11, 6))
     print(affine_decode("SXQAHKWCEKYTBKTFFQWGBTESOHVYASSTKDSOXVBQHNHQYYHUSXTBQYKXV", alpha, 21, 10))
     print(affine_decode("XEIACKZMPOWBYTYWYVOFTYTERYWXABKPAUYRGTPOUBARGKQM", alpha, 9, 4))
+
+    print(affine_bigraph_encode("BOMBOGENESIS", alpha, 375, 114))
+    print(affine_bigraph_decode("SSPXYOPX", alpha, 343, 31))
+    print(bigraph_coefficients("EARLYDECISION","SWAPQNWQOUHGJF",alpha))
+    print(inv_mod(13,41))
     #HEANALYZEDPOPULARMOVIESFROMASCIENTIFICPERSPECTIVE
     #ONECLAIMWASTHATBBEIGHTWOULDSCOOTAROUNDHELPLESSLYONTHESAND
     #FAMOUSLYHECRITICIZEDTITANICFORSHOWINGTHEWRONGSKY
-
-
+    text = "K7EP?G0MJLYO?!D0GW6KMUBQ*-.FJ-"
+    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!.?0123456789-*" 
+    print(affine_decode(text, alpha, 3, 0))
     
     
 main()

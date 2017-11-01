@@ -11,7 +11,7 @@ def scalar_mult_mod(m,s,mod):
     m2[1][1] = (m2[1][1]*s) % mod
     return m2
 def inv_mat(m,mod):
-    
+    return None
 def matrix_mult_mod(m1,m2,mod):
     ans = []
     for row in range(len(m1)):
