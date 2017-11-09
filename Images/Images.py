@@ -1,4 +1,5 @@
 from PIL import Image
+import copy
 
 '''im = Image.open("Disco.bmp")    #open an image
 print(im.size)                  #retrieve the length & width as a tuple
@@ -15,16 +16,46 @@ learned before.  To convert an RGB image to a true grayscale image, use this cod
 im = Image.open("filename").convert("L")  #"L" is the shorthand for the format we are using
 im.save("new filename")
 '''
+def matrix_mult_mod(m1, m2, mod):
+
+    ans = []
+  
+    for row in range(len(m1)):
+        ans.append([])
+        for col in range(len(m2[0])):
+            a = (m1[row][0] * m2[0][col] + m1[row][1] * m2[1][col]) % mod
+            ans[row].append(a)
+    return ans
 
 def caesar(im, shift):
-    for x in range(0, im.size[0]):
-        for y in range(0, im.size[1]):
-            pixel= im.getpixel((x,y))
-            im.putpixel((x,y), ((pixel + shift) % 256))
+    for i in range(0, im.size[0]):
+        for j in range(0, im.size[1]):
+            pixel= im.getpixel((i,j))
+            im.putpixel((i,j), ((pixel + shift) % 256))
+            
+def hill_cipher_encode(im, matrix):
+    for i in range(0, im.size[1]):
+        for j in range(0, im.size[0],2):
+            #print(i,j)
+            pixel1 = im.getpixel((j,i))
+            pixel2 = im.getpixel((j+1,i))
+            mpixels = [[pixel1, pixel2]]
+            encrypted = matrix_mult_mod(mpixels, matrix, 256)
+            im.putpixel((j,i), encrypted[0][0])
+            im.putpixel((j+1,i), encrypted[0][1])
+            
+            
+            
 def main():
+    '''
     im = Image.open("Disco.bmp").convert("L")
     caesar(im, 53)
     im.show()
     im.save("DiscoCaesarShifted.bmp")
-
+    '''
+    im = Image.open("SC.bmp").convert("L")
+    matrix = [[2,3],[5,20]]
+    hill_cipher_encode(im, matrix)
+    im.show()
+    im.save("SCHillCipher.bmp")
 main()
