@@ -79,7 +79,7 @@ def find_a(digraph1, digraph2, enc1, enc2, alpha):
     a = matrix_mult_mod(matrix_inverse_mod(matrix1, len(alpha)), matrix2, len(alpha))
     return a    
 
-
+    
 def hard_code_loop(encrypted, common, alpha):
     mod = len(alpha)
     #matrix = [[c2i(encrypted[0][1][0], alpha), c2i(encrypted[0][1][1], alpha)], [c2i(encrypted[1][1][0], alpha), c2i(encrypted[1][1][1], alpha)]]
@@ -95,12 +95,23 @@ def hard_code_loop(encrypted, common, alpha):
                         if(matrix_2x2_encode(user[1], encrypt, alpha) in common):
                             print(encrypt)
                             break
+                    
+                      
+encrypted_passwords = []
+encrypted = open("encrypted.txt","r")
+for line in encrypted.readlines():
+      line = line.strip()
+      (w1,w2) = line.split()
+      encrypted_passwords.append([w1,w2])
+encrypted.close()
 
-alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!.?0123456789-*"
+common_words = []
+common = open("common.txt","r")
+for line in common.readlines():
+      line = line.strip()
+      common_words.append(line)
+common.close()
 
-matrix = find_a("TO","ER","AQ","8J", alpha)                     
-print(matrix_2x2_encode("M4468NZ.F0SR6*BD4GTOPKBV*1D7?TYSKDCXHG!EJ147SDL8SFFPG8O2R4NDJJXGG!.A66NMJ947.AZH-2BXIZ.*EM", matrix, alpha))
+alpha = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]'
 
-matrix = [[7,24],[4,3]]
-message = "RMPFXC8ED2I3X7B8CV-RE5OT.NJ0DN"
-print(matrix_2x2_encode(message, matrix, alpha))
+hard_code_loop(encrypted_passwords, common_words, alpha)

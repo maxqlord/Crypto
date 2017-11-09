@@ -92,6 +92,13 @@ def bigraph_coefficients(plaintext, ciphertext, alpha):
             if(affine_bigraph_encode(plaintext, alpha, a, b) == ciphertext):
                 return a,b
     return -1
+def coefficients(plaintext, ciphertext, alpha):
+    for a in range(0, 500):
+        for b in range(0,500):
+            if(affine_encode(plaintext, alpha, a, b) == ciphertext):
+                return a,b
+    return -1
+
     
 def main():
     #alpha2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?,."
@@ -118,6 +125,8 @@ def main():
     text = "K7EP?G0MJLYO?!D0GW6KMUBQ*-.FJ-"
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!.?0123456789-*" 
     print(affine_decode(text, alpha, 3, 0))
+    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    print(coefficients("FIREWORKS","FKZMQUZWS",alpha))
     
     
 main()

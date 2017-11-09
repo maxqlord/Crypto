@@ -62,45 +62,76 @@ def matrix_2x2_encode(msg, matrix, alpha):
     mod = len(alpha)
     inv = matrix_inverse_mod(matrix, mod)
     if inv == None:
-        return ''
+        return None
     msg = prepare_string(msg, alpha)
     if len(msg) % 2 == 1:
         msg += "A"
     result = ''
     for i in range(0, len(msg), 2):
         matrix = matrix_mult_mod(bi2matrix(msg[i:i+2], alpha), inv, mod)
+        #print(matrix)
         result += matrix2bi(matrix, alpha)
     return result
         
 def find_a(digraph1, digraph2, enc1, enc2, alpha):
     matrix1 = [[c2i(digraph1[0], alpha), c2i(digraph1[1], alpha)], [c2i(digraph2[0], alpha), c2i(digraph2[1], alpha)]]
     matrix2 = [[c2i(enc1[0], alpha), c2i(enc1[1], alpha)], [c2i(enc2[0], alpha), c2i(enc2[1], alpha)]]
+    inv = matrix_inverse_mod(matrix1, len(alpha))
+    if(inv == None):
+        return None
+    a = matrix_mult_mod(inv, matrix2, len(alpha))
+    return a
 
-    a = matrix_mult_mod(matrix_inverse_mod(matrix1, len(alpha)), matrix2, len(alpha))
-    return a    
-
-
+'''ideas
+for each user
+    for each word
+        take first bigraph of user password and word and find necessary encryption matrix to make it work
+        check second bigraph
+            if works print if not move to next word
+'''
 def hard_code_loop(encrypted, common, alpha):
+    m_list = []
     mod = len(alpha)
     #matrix = [[c2i(encrypted[0][1][0], alpha), c2i(encrypted[0][1][1], alpha)], [c2i(encrypted[1][1][0], alpha), c2i(encrypted[1][1][1], alpha)]]
-    for a in range(0, mod):
-        print("*********")
-        for b in range(mod):
-            print(b)
-            for c in range(mod):
-                print(c)
-                for d in range(mod):
-                    encrypt = [[a, b], [c, d]]
-                    for user in encrypted:
-                        if(matrix_2x2_encode(user[1], encrypt, alpha) in common):
-                            print(encrypt)
-                            break
+    for user in encrypted:
+        #print(user)
+        for word in common:
+            #print(word)
+            wordcrib1 = word[0:2]
+            pwordcrib1 = user[1][0:2]
+            wordcrib2 = word[2:4]
+            pwordcrib2 = user[1][2:4]
+            wordcrib3 = word[4:6]
+            pwordcrib3 = user[1][4:6]
+            #print(wordcrib1, wordcrib2, pwordcrib1, pwordcrib2)
+            m = find_a(wordcrib1, wordcrib2, pwordcrib1, pwordcrib2, alpha)
+            m2 = find_a(wordcrib1, wordcrib3, pwordcrib1, pwordcrib3, alpha)
+            m3 = find_a(wordcrib2, wordcrib3, pwordcrib2, pwordcrib3, alpha)
+            if m != None and m2 != None and m3 != None and m == m2 == m3 and m not in m_list:  #test rest of word
+                m_list.append(m)
+    return m_list
 
-alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!.?0123456789-*"
 
-matrix = find_a("TO","ER","AQ","8J", alpha)                     
-print(matrix_2x2_encode("M4468NZ.F0SR6*BD4GTOPKBV*1D7?TYSKDCXHG!EJ147SDL8SFFPG8O2R4NDJJXGG!.A66NMJ947.AZH-2BXIZ.*EM", matrix, alpha))
 
-matrix = [[7,24],[4,3]]
-message = "RMPFXC8ED2I3X7B8CV-RE5OT.NJ0DN"
-print(matrix_2x2_encode(message, matrix, alpha))
+encrypted_passwords = []
+encrypted = open("encrypted.txt","r")
+for line in encrypted.readlines():
+      line = line.strip()
+      (w1,w2) = line.split()
+      encrypted_passwords.append([w1,w2])
+encrypted.close()
+
+common_words = []
+common = open("common.txt","r")
+for line in common.readlines():
+      line = line.strip()
+      common_words.append(line.upper())
+common.close()
+
+common_words = [x for x in common_words if len(x) > 6 and any(char.isdigit() for char in x) == False]
+alpha = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]'
+#print(common_words)
+#print(encrypted_passwords)
+m = hard_code_loop(encrypted_passwords, common_words, alpha)
+print(m)
+#test(encrypted_passwords, common_words, alpha, m)
