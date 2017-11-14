@@ -89,6 +89,10 @@ for each user
         check second bigraph
             if works print if not move to next word
 '''
+
+
+
+
 def hard_code_loop(encrypted, common, alpha):
     m_list = []
     mod = len(alpha)
