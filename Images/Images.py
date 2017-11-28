@@ -82,6 +82,7 @@ def hill_cipher_decode(im, matrix):
             im.putpixel((j+1,i), decrypted[0][1])
 
 def hill_cipher_augment_encode(im, matrix, vector):
+    
     row_to_mult = 0
     for i in range(0,im.size[1]):
         for j in range(0, im.size[0],2):
