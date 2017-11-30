@@ -1,32 +1,103 @@
-from random import randint
 from primefac import factorint
+import random
+import time
+import math
 
 
-def m_r(n,k):
-    d = n-1
+def perfect_square(n):
+    if n == 1:
+        return True
+    low = 0
+    high = n // 2
+    root = high
+    while root * root != n:
+        root = (low + high) // 2
+        if low + 1 >= high:
+            return False
+        if root * root > n:
+            high = root
+        else:
+            low = root
+    return True
+
+
+def factor(n):
+    x = math.ceil(n ** .5)
+    while x < n:
+        y2 = x ** 2 - n
+        if perfect_square(y2):
+            y = y2 ** .5
+            factor1 = x + y
+            factor2 = x - y
+            return factor1, factor2
+        x += 1
+
+
+def m_r(n, k):
+    d = n - 1
     s = 0
     while d % 2 == 0:
-        s+=1
+        s += 1
         d = d // 2
     for i in range(k):
-        if m_r_trial(n,s,d) == False:
+        if not m_r_trial(n, s, d):
             return False
     return True
 
-def m_r_trial(n,s,d):
-    a = random.randint(1,n-1)
-    if pow(a,d,n) == 1:
+
+def m_r_trial(n, s, d):
+    a = random.randint(1, n - 1)
+    if pow(a, d, n) == 1:
         return True
-    x = pow(a,d,n)
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    x = pow(a, d, n)
     r = 0
-    while r <= s-1:
-        if x == n-1:
+    while r <= s - 1:
+        if x == n - 1:
             return True
-        r+=1
-        x = pow(x,2,n)
+        r += 1
+        x = pow(x, 2, n)
     return False
 
+
+def run_trial(e):
+    prime_start = time.time()
+    prime_list = []
+    start = random.randrange(2 ** (e - 1), 2 ** e)
+    while len(prime_list) < 2:
+        if start >= 2**e:
+            start = random.randrange(2 ** (e - 1), 2 ** e)
+
+        if m_r(start, 10):
+            prime_list.append(start)
+            start = random.randrange(2 ** e - 1, 2 ** e)
+        start += 1
+
+    prime_end = time.time()
+    prime_time = prime_end - prime_start
+    n = prime_list[0] * prime_list[1]
+    factor_start = time.time()
+    factors = factor(n)
+    factor_end = time.time()
+    factor_time = factor_end - factor_start
+
+    print("Between 2 to the " + str(e - 1) + "th and 2 to the " + str(e) + "th power")
+    print("Found primes " + str(prime_list[0]) + " and " + str(prime_list[1]))
+    print("Product " + str(n))
+    print("Factored to " + str(factors))
+    print("Finding primes took " + str(prime_time) + " seconds")
+    print("Factoring product took " + str(factor_time) + " seconds")
+
+
 def main():
-    print(m_r(2**20 + 1,10))
-    print(factorint(2**20 + 1))
-    
+    """
+    print(m_r(2 ** 20 + 1, 10))
+    print(factorint(2 ** 20 + 1))
+    """
+    run_trial(27)
+
+
+main()
