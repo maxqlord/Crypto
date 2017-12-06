@@ -1,4 +1,4 @@
-from primefac import factorint
+from primefac import *
 import random
 import time
 import math
@@ -22,11 +22,11 @@ def perfect_square(n):
 
 
 def factor(n):
-    x = math.ceil(n ** .5)
+    x = int(math.ceil(n ** .5))
     while x < n:
-        y2 = x ** 2 - n
+        y2 = (x ** 2) - n
         if perfect_square(y2):
-            y = y2 ** .5
+            y = int(y2 ** .5)
             factor1 = x + y
             factor2 = x - y
             return factor1, factor2
@@ -63,12 +63,41 @@ def m_r_trial(n, s, d):
     return False
 
 
+def run_multiple_trials(e):
+    prime_time_list = []
+    factor_time_list = []
+    for x in range(10):
+
+        prime_start = time.time()
+        prime_list = []
+        start = random.randrange(2 ** (e - 1), 2 ** e)
+        while len(prime_list) < 2:
+            if start >= 2 ** e:
+                start = random.randrange(2 ** (e - 1), 2 ** e)
+
+            if m_r(start, 10):
+                prime_list.append(start)
+                start = random.randrange(2 ** e - 1, 2 ** e)
+            start += 1
+
+        prime_end = time.time()
+        prime_time_list.append(prime_end - prime_start)
+        n = prime_list[0] * prime_list[1]
+        factor_start = time.time()
+        factors = factor(n)
+        # factors = factorint(n);
+        factor_end = time.time()
+        factor_time_list.append(factor_end - factor_start)
+    print("Average time to find two primes: " + str(sum(prime_time_list) / len(prime_time_list)))
+    print("Average time to factor product: " + str(sum(factor_time_list) / len(factor_time_list)))
+
+
 def run_trial(e):
     prime_start = time.time()
     prime_list = []
     start = random.randrange(2 ** (e - 1), 2 ** e)
     while len(prime_list) < 2:
-        if start >= 2**e:
+        if start >= 2 ** e:
             start = random.randrange(2 ** (e - 1), 2 ** e)
 
         if m_r(start, 10):
@@ -81,6 +110,61 @@ def run_trial(e):
     n = prime_list[0] * prime_list[1]
     factor_start = time.time()
     factors = factor(n)
+    # factors = factorint(n);
+    factor_end = time.time()
+    factor_time = factor_end - factor_start
+
+    print("Between 2 to the " + str(e - 1) + "th and 2 to the " + str(e) + "th power")
+    print("Found primes " + str(prime_list[0]) + " and " + str(prime_list[1]))
+    print("Product " + str(n))
+    print("Factored to " + str(factors))
+    print("Finding primes took " + str(prime_time) + " seconds")
+    print("Factoring product took " + str(factor_time) + " seconds")
+
+
+def run_multiple_trials_primefac(e):
+    prime_time_list = []
+    factor_time_list = []
+    for x in range(10):
+
+        prime_start = time.time()
+        prime_list = []
+        # start = random.randrange(2 ** (e - 1), 2 ** e)
+
+        while len(prime_list) < 2:
+            y = random.randint(2 ** (e - 1), 2 ** e)
+            x = nextprime(y)
+            if m_r(x, 10):
+                prime_list.append(x)
+
+        prime_end = time.time()
+        prime_time_list.append(prime_end - prime_start)
+        n = prime_list[0] * prime_list[1]
+        factor_start = time.time()
+        # factors = factor(n)
+        factors = factorint(n);
+        factor_end = time.time()
+        factor_time_list.append(factor_end - factor_start)
+    print("Average time to find two primes: " + str(sum(prime_time_list) / len(prime_time_list)))
+    print("Average time to factor product: " + str(sum(factor_time_list) / len(factor_time_list)))
+
+
+def run_trial_primefac(e):
+    prime_start = time.time()
+    prime_list = []
+
+    while len(prime_list) < 2:
+        y = random.randint(2 ** (e - 1), 2 ** e)
+        x = nextprime(y)
+        if m_r(x, 10):
+            prime_list.append(x)
+
+    prime_end = time.time()
+    prime_time = prime_end - prime_start
+    n = prime_list[0] * prime_list[1]
+    factor_start = time.time()
+    # factors = factor(n)
+    factors = factorint(n);
     factor_end = time.time()
     factor_time = factor_end - factor_start
 
@@ -97,7 +181,8 @@ def main():
     print(m_r(2 ** 20 + 1, 10))
     print(factorint(2 ** 20 + 1))
     """
-    run_trial(27)
+    run_multiple_trials_primefac(40) #40: .001025, 1.2444
+
 
 
 main()
