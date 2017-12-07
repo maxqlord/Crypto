@@ -197,14 +197,13 @@ def find_matrix2(plain, enc, alpha):
                         print(matrix_inverse_mod(matrix, len(alpha)))
 
 
-''' affine works
+
 alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.!?, ;:"
 plaintext = "Whenyoucontrolthemailyoucontrolinformation!"
 print(affine_bigraph_encode(plaintext, alpha, 476,1929))
 
 ciphertext = "VJtImogkDNOCzNVNzk,;,aS?qmwNB;TaNNy,rvMaRuQQlNQWSIPs"
 print(affine_bigraph_decode(ciphertext, alpha, 476,1929))
-'''
 
 
 alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;-,!"
@@ -224,39 +223,12 @@ print(matrix_2x2_encode("kbmXU.Fk", m3, alpha))
 print(matrix_2x2_encode("kbmXU.Fk", m2, alpha))
 
 
-
-
-
-'''matrix = find_matrix("Seinfeld", "kbmXU.Fk", alpha)
-print(matrix)
-'''
 find_matrix2("Seinfeld", "kbmXU.Fk", alpha)
 print("first one")
 
 
+#for multiple encodes
+#matrix 2x2 encode * 10
+#find_matrix2 to find decryption matrix
 
 
-
-
-
-
-
-
-
-
-
-
-
-#matrix = [[33,4],[31,30]]
-#message = "eQaJgyiDxuTrkOBbRAhFjpaItodpxMCEjpVhPlhodi.qcrCEgyWxefJlnHPlWyEgLfPlmyGbzYhIRhKiiDmqiDxuHJhuVSBuXujYcrWQbucYC-yEYdxNdihIPFUoMegqUGWjsLuUGKWxaQcrHHiUOA"
-#print(matrix_2x2_encode(message, matrix_inverse_mod(matrix, 57), alpha))
-#print(affine_bigraph_decode(ciphertext, alpha, 476, 1929))
-
-'''
-matrix = find_a("TO","ER","AQ","8J", alpha)                     
-print(matrix_2x2_encode("M4468NZ.F0SR6*BD4GTOPKBV*1D7?TYSKDCXHG!EJ147SDL8SFFPG8O2R4NDJJXGG!.A66NMJ947.AZH-2BXIZ.*EM", matrix, alpha))
-
-matrix = [[7,24],[4,3]]
-message = "RMPFXC8ED2I3X7B8CV-RE5OT.NJ0DN"
-print(matrix_2x2_encode(message, matrix, alpha))
-'''
