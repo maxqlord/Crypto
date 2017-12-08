@@ -116,30 +116,7 @@ def find_a_values(mod):
         if gcd(i,mod) == 1:
             counter += 1
     return counter
-def affine_bigraph_encode(text, alpha, a, b):
-    mod = len(alpha)
-    if gcd(a, mod) != 1:
-        return None
-    if len(text) % 2 == 1:
-        text += "X"
-    ciphertext = ""
-    for i in range(0, len(text), 2):
-        bigraph = text[i] + text[i+1]
-        encoded_num = (a * bi2i(bigraph, alpha) + b) % (mod*mod)
-        ciphertext += i2bi(encoded_num, alpha)
 
-    return ciphertext
-               
-def affine_bigraph_decode(text, alpha, a, b):
-    mod = len(alpha)*len(alpha)
-    plaintext = ""
-    for i in range(0, len(text), 2):
-        bigraph = text[i] + text[i+1]
-        encoded_index = bi2i(bigraph, alpha)
-        decoded_index = ((encoded_index + mod - b) * inv_mod(a, mod)) % mod
-        decoded_bi = i2bi(decoded_index, alpha)
-        plaintext += decoded_bi
-    return plaintext
 def equation_solve(a,b):
     return np.linalg.solve(a,b)
 
@@ -195,37 +172,57 @@ def find_matrix2(plain, enc, alpha):
                     if matrix_2x2_encode(plain, matrix, alpha) == enc:
                         print(matrix)
                         print(matrix_inverse_mod(matrix, len(alpha)))
+                        
+def affine_bigraph_encode(text, alpha, a, b):
+    mod = len(alpha)
+    if gcd(a, mod) != 1:
+        return None
+    if len(text) % 2 == 1:
+        text += "X"
+    ciphertext = ""
+    for i in range(0, len(text), 2):
+        bigraph = text[i] + text[i+1]
+        encoded_num = (a * bi2i(bigraph, alpha) + b) % (mod*mod)
+        ciphertext += i2bi(encoded_num, alpha)
 
+    return ciphertext
+               
+def affine_bigraph_decode(text, alpha, a, b):
+    mod = len(alpha)*len(alpha)
+    plaintext = ""
+    for i in range(0, len(text), 2):
+        bigraph = text[i] + text[i+1]
+        encoded_index = bi2i(bigraph, alpha)
+        decoded_index = ((encoded_index + mod - b) * inv_mod(a, mod)) % mod
+        decoded_bi = i2bi(decoded_index, alpha)
+        plaintext += decoded_bi
+    return plaintext
 
 
 alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.!?, ;:"
 plaintext = "Whenyoucontrolthemailyoucontrolinformation!"
-print(affine_bigraph_encode(plaintext, alpha, 476,1929))
+print(affine_bigraph_encode(plaintext, alpha, 85,1817))
 
-ciphertext = "VJtImogkDNOCzNVNzk,;,aS?qmwNB;TaNNy,rvMaRuQQlNQWSIPs"
-print(affine_bigraph_decode(ciphertext, alpha, 476,1929))
+ciphertext = "QKEitDFpLdTKRxCqQi?cUDAcnsjxmrZiLB?E"
+print(affine_bigraph_decode(ciphertext, alpha, 612,280))
 
 
 alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;-,!"
-matrix = [[33,4],[31,30]]
-plaintext = "Youwouldnteatbroccoliifitwasdeepfriedinchocolate!"
+matrix = [[32,12],[1,14]]
+plaintext = "Butthefireissodelightful!"
 print(matrix_2x2_encode(plaintext, matrix, alpha))
 
-ciphertext = "eQaJgyiDxuTrkOBbRAhFjpaItodpxMCEjpVhPlhodi.qcrCEgyWxefJlnHPlWyEgLfPlmyGbzYhIRhKiiDmqiDxuHJhuVSBuXujYcrWQbucYC-yEYdxNdihIPFUoMegqUGWjsLuUGKWxaQcrHHiUOA"
+ciphertext = "YOpiaG,hMtihTXXFsmVnoiHrCbfLPbTXg!CbfLPbTXHgORr;,YcKta"
 inv = matrix_inverse_mod(matrix, len(alpha))
 print(matrix_2x2_encode(ciphertext, inv, alpha))
 
-m2 = [[5, 52], [15, 38]]
-m3 = [[38, 14], [15, 14]]
+m2 = [[24, 22], [41, 54]]
+m3 = [[12, 50], [31, 18]]
 
-print(matrix_2x2_encode("Seinfeld", m3, alpha))
-print(matrix_2x2_encode("kbmXU.Fk", m3, alpha))
-print(matrix_2x2_encode("kbmXU.Fk", m2, alpha))
+print(matrix_2x2_encode("SMqEDWuo", m3, alpha))
 
 
-find_matrix2("Seinfeld", "kbmXU.Fk", alpha)
-print("first one")
-
+#find_matrix2("Seinfeld", "SMqEDWuo", alpha)
 
 #for multiple encodes
 #matrix 2x2 encode * 10
