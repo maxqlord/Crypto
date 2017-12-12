@@ -60,60 +60,114 @@ def pick_e(m):
         e += 2
     return e
 
-def solve_d(e, m, totient): #change
-    for d in range(m):
-        if (e * d) % totient == 1:
-            return d
-    return None
+def find_factors(a,m):
+    quotients = []
+    while m % a != 1:
+        temp = a
+        quotients.append((m- (m % a))//a)
+        a = m % a
+        m = temp
+    quotients.append((m- (m % a))//a)
+    return quotients
+
+def mod_eq(x,y, z, quotients,m):
+    if z >= len(quotients):
+        return y % m
+    else:
+        return mod_eq(y, y*-1*quotients[z] + x, z+1, quotients, m)
+
+def solve_d(a,m):
+    quotients = find_factors(a,m)
+    quotients = quotients[::-1]
+    return mod_eq(1,-quotients[0], 1, quotients, m)   
+    
 
 def convert_message(plaintext, alpha, m):
     power = 0
     while len(alpha) ** power < m:
         power += 1
     power -= 1
-    converted_num = 0
-    for char in plaintext:
-        index = c2i(char, alpha)
-        converted_num += index * len(alpha) ** power
-        power -= 1
-    return converted_num
+    while len(plaintext) % power != 0:
+        plaintext+="Z"
+
+    plain_array = []
+    num_array = []
+    for i in range(0,len(plaintext),power):
+        plain_array.append(plaintext[i:i+power])
+    print(plain_array)
+    i = power - 1
+    for word in plain_array:
+        
+        converted_num = 0
+        for char in word:
+            index = c2i(char, alpha)
+            converted_num += index * (len(alpha) ** i)
+            i -= 1
+        i = power-1
+        num_array.append(converted_num)
+        
+    return num_array
 
 def encrypt_num(num, e, m):
-    return (num ** e) % m
+    encrypt_list = []
+    for element in range(len(num)):
+        encrypt_list.append(pow(num[element],e,m))
+    return encrypt_list
 
 def decrypt_num(num, d, m):
-    return (num ** d) % m
+    decrypt_list = []
+    for element in range(len(num)):
+        decrypt_list.append(pow(num[element],d,m))
+    return decrypt_list
 
 def convert_num(decrypted, alpha, m):
+
+    power = 0
+    while len(alpha) ** (power+1) < m:
+        power += 1
     message = ""
-    while decrypted > 0: #?
-        message += i2c(decrypted % len(alpha), alpha)
-        decrypted //= len(alpha)
+    for element in range(0, len(decrypted)):
+        num = decrypted[element]
+        string_section = ""
+        for x in range(power):
+            n = num % len(alpha)
+            string_section += i2c(n, alpha)
+            num -= n
+            num //= len(alpha)
+        message += string_section[::-1]
     return message
                            
-
+#need to rewrite convert_num and solve_d
 def main():
-    alpha = "1ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    plaintext = "TEST"
-    p = pick_primes(10)
+    #modinv(85,331)
+    p = pick_primes(511)
     m = make_m(p[0],p[1])
     totient = totient_m(p[0],p[1])
     e = pick_e(m)
-    d = solve_d(e,m,totient)
-    num = convert_message(plaintext, alpha, m)
-    encrypted = encrypt_num(num,e,m)
-    decrypted = decrypt_num(encrypted, d, m)
-    message = convert_num(decrypted, alpha, m)
-    print(p)
+    d = solve_d(e, totient)
+    print(d)
+    ''' 
+    alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;-, !'"
+    plaintext = "This is a sentence with completely normal formatting and as you can see as long as you include every character in your alphabet, it will decode perfectly with no issues whatsoever, isn't that exciting!"
+    
+    #p = pick_primes(10)
+    m = make_m(10745914002293,14627728288231)
+    totient = totient_m(10745914002293,14627728288231)
     print(m)
     print(totient)
-    print(e)
-    print(d)
+    e = pick_e(m)
+    num = convert_message(plaintext, alpha, m)
     print(num)
+    encrypted = encrypt_num(num,e,m)
     print(encrypted)
+    d = 100987439193303955497674873#solve_d(e,m,totient)
+    print(d)
+    decrypted = decrypt_num(encrypted, d, m)
     print(decrypted)
+    message = convert_num(decrypted, alpha, m)
     print(message)
-    
+    '''
+
 
 main()
     
