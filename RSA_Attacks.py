@@ -35,16 +35,24 @@ def m_r(n, k):
             return False
     return True
 
-def pick_primes(e):
+def pick_primes(e, diff):
     prime_list = []
     start = random.randrange(2 ** (e - 1), 2 ** e)
     while len(prime_list) < 2:
-        if start >= 2 ** e:
-            start = random.randrange(2 ** (e - 1), 2 ** e)
-
+        if start > 2**e:
+            if len(prime_list) == 0:
+                start = random.randrange(2 ** (e - 1), 2 ** e)
+            else:
+                start = random.randrange(start-diff, start + diff)
         if m_r(start, 10):
-            prime_list.append(start)
-            start = random.randrange(2 ** e - 1, 2 ** e)
+            if len(prime_list) == 0:
+                prime_list.append(start)
+                start = random.randrange(start-diff, start + diff)
+            else:
+                if abs(prime_list[0]-start) <= diff:
+                    prime_list.append(start)
+                else:
+                    start = random.randrange(start-diff, start + diff)
         start += 1
     return prime_list
 
@@ -136,50 +144,14 @@ def convert_num(decrypted, alpha, m):
             num //= len(alpha)
         message += string_section[::-1]
     return message
-                           
-#need to rewrite convert_num and solve_d
+
 def main():
-    #modinv(85,331)
-    '''
-    p = pick_primes(511)
-    m = make_m(p[0],p[1])
-    totient = totient_m(p[0],p[1])
-    e = pick_e(m)
-    d = solve_d(e, totient)
-    '''
-    alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;-, !'"
-    plaintext = "I'm writing college essays and watching Black Mirror on Netflix."
+    arr = pick_primes(511, 10**5)
+    print(arr)
+    print(arr[0] * arr[1])
+    print(arr[0] - arr[1])
+    
 
     
-    #p = pick_primes(511)
-    m = 147690143426417720543026043890448472042375285573365468767128662033037446713246419100204917883446300400801225405192554010954725249626347314234029446068634707387105420955618605845881594400970904496218962357799602434736918859856803813645781043520129383769019885018939343481635017846708963422603112278784470086259
-    e = 65537#pick_e(m)
-    num = convert_message(plaintext, alpha, m)
-    encrypted = encrypt_num(num,e,m)
-    print(encrypted)
-    '''
-    d = solve_d(e,totient)
-    print(m)
-    print("\n\n\n")
-    print(e)
-    print("\n\n\n")
-    print(p[0])
-    print(p[1])
-    print("\n\n\n")
-    print(totient)
-    print("\n\n\n")
-    print(d)
-    '''
-    '''
-    encrypted = [13295204865947947337216471847293007631528873035414398480506563790198695342888260212621615639305361217033501296101494731427430550204158139173864088086067265788380359366632277665231438588940093383879519630716707555751279405541391956175826745433285216935873707515307071052458716103755683084481823974185813677135]
-
-    decrypted = decrypt_num(encrypted, d, m)
-    print(decrypted)
-    message = convert_num(decrypted, alpha, m)
-    print(message)
-    '''
-
-
+ 
 main()
-    
-    
