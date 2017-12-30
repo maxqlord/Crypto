@@ -136,17 +136,35 @@ def convert_num(decrypted, alpha, m):
             num //= len(alpha)
         message += string_section[::-1]
     return message
-                           
-#need to rewrite convert_num and solve_d
+
+
 def main():
     #modinv(85,331)
+
+    m = 157188310234238919098913683
+    totient = 157188310234213545456623160
+    e = 65537
+    d = 100987439193303955497674873
+    
+    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    plaintext = "ALLWORKANDNOPLAYMAKESJACKADULLBOY"
+
+    num = convert_message(plaintext, alpha, m)
+    encrypted = encrypt_num(num,e,m)
+    print(encrypted)
+    decrypted = decrypt_num(encrypted, d, m)
+    print(decrypted)
+    message = convert_num(decrypted, alpha, m)
+    print(message)
+
+    
     '''
     p = pick_primes(511)
     m = make_m(p[0],p[1])
     totient = totient_m(p[0],p[1])
     e = pick_e(m)
     d = solve_d(e, totient)
-    '''
+    
     alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;-, !'"
     plaintext = "I'm writing college essays and watching Black Mirror on Netflix."
 
@@ -157,7 +175,7 @@ def main():
     num = convert_message(plaintext, alpha, m)
     encrypted = encrypt_num(num,e,m)
     print(encrypted)
-    '''
+    message = convert_num(decrypted, alpha, m)
     d = solve_d(e,totient)
     print(m)
     print("\n\n\n")
@@ -175,7 +193,7 @@ def main():
 
     decrypted = decrypt_num(encrypted, d, m)
     print(decrypted)
-    message = convert_num(decrypted, alpha, m)
+    
     print(message)
     '''
 
