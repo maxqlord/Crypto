@@ -41,7 +41,7 @@ def m_r(n, k):
     return True
 
 
-def pick_primes(e, diff):
+def pick_primes_diff(e, diff):
     prime_list = []
     start = random.randrange(2 ** (e - 1), 2 ** e)
     while len(prime_list) < 2:
@@ -59,6 +59,19 @@ def pick_primes(e, diff):
                     prime_list.append(start)
                 else:
                     start = random.randrange(start - diff, start + diff)
+        start += 1
+    return prime_list
+
+def pick_primes(e):
+    prime_list = []
+    start = random.randrange(2 ** (e - 1), 2 ** e)
+    while len(prime_list) < 2:
+        if start >= 2 ** e:
+            start = random.randrange(2 ** (e - 1), 2 ** e)
+
+        if m_r(start, 10):
+            prime_list.append(start)
+            start = random.randrange(2 ** e - 1, 2 ** e)
         start += 1
     return prime_list
 
@@ -104,18 +117,26 @@ def solve_d(a, m):
 def create_sequence(length, alpha):
     sequence = "<"
     for i in range(length-2):
-        sequence.append(random.choice(list(alpha)))
-    sequence.append(">")
+        letter = random.choice(list(alpha))
+        while letter == "<" or letter == ">":
+            letter = random.choice(list(alpha))
+        sequence += letter
+    sequence += ">"
     return sequence
     
 def convert_message(plaintext, alpha, m):
+    for i in range(3):
+        index = random.randint(0,len(plaintext))
+        plaintext = plaintext[:index] + create_sequence(random.randint(4,20),alpha) + plaintext[index:] 
     power = 0
     while len(alpha) ** power < m:
         power += 1
     power -= 1
-    while len(plaintext) % power != 0:
-        plaintext += " "
+    x = len(plaintext) % power
+    if x != 0:
+        plaintext += create_sequence(power+power-x, alpha)
 
+    print(plaintext)
     plain_array = []
     num_array = []
     for i in range(0, len(plaintext), power):
@@ -154,6 +175,7 @@ def remove_junk(message):
         while message[index] != ">":
             message = message[:index] + message[index+1:]
         message = message[:index] + message[index+1:]
+    return message
 
 def convert_num(decrypted, alpha, m):
     power = 0
@@ -169,45 +191,26 @@ def convert_num(decrypted, alpha, m):
             num -= n
             num //= len(alpha)
         message += string_section[::-1]
-
+    print(message)
     message = remove_junk(message)
         
-    
     return message
 
     
 def main():
-
-    '''alpha= "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;:-, !'0123456789"
-    m=106382053895550781631285989946671994901422402885384005734669390130404880949239142241842903713130115581490732292356870236631337904281854676807813263510001411983900084040159377605552511174634634036897745619667852912154300017597144357866633696471699967965565310764085206116047453528193353554423244052263729215021
-    print(solve_d(65537, 65539))
-    '''
-    
-    '''
-    alpha= "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;:-, !'0123456789"
-    users = ["meckel","Meckel","mEckel", "MEckel", "mceckel","Mceckel","mCeckel", "mcEckel", "MCeckel", "McEckel", "MCEckel", "mCEckel", "malcom.eckel", "Malcom.eckel",  "malcom.Eckel",  "Malcom.Eckel"]
-    m = 90487058565911344860746920532714345107344888706603388689414973118770115868824428038927974148369533060365472446789821522968583861289788613738073758712025234963231865997137994675667715748727317358600691229070201161969867856640249424928418473804035245009947964183514868695116591835621822263433693274598400210107
-    e=65537
-    intercepted = 1146948390450508061237246402938932791716411473847224475062235553042635385039708473826626084916757574374873906074434396951057457722800514748803933741138291677248905061102227147826086956521739130434782608695652173913043478260869565217391304347826086956521739130434782608695652173913043478260869565217391304347
-    #print(intercepted)
-    
-    common_words = []
-    common = open("common.txt","r")
-    for line in common.readlines():
-        line = line.strip()
-        common_words.append(line)
-    common.close()
-    #print(common_words)
-    for user in users:
-        for password in common_words:
-            if convert_message("userid:"+user+", password:" + password, alpha, m)[0] == intercepted:
-                print(user)
-                print(password)
-                break
-    '''
-
-    
-
+    alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.!?, ;:<>"
+    plaintext = "My name is Maximus Decimus Meridius, Commander of the Armies of the North, General of the Felix Legions, loyal servant to the true emperor, Marcus Aurelius. Father to a murdered son, husband to a murdered wife. And I will have my vengeance, in this life or the next."
+    m = 101533675266204711531654785393679402237996918671114485049619417758278007006594690108173215546012245481143359145312245046121095659949331214052351454912828387999134593248922700747814819913654302080371106303479499351344317982601786702908390357301888078578018864923801739786681821006546489694096357917919507186951
+    e = 65537
+    totient = 101533675266204711531654785393679402237996918671114485049619417758278007006594690108173215546012245481143359145312245046121095659949331214052351454912828367823172069714434695993745516329872565920722985195154349692291357325359114667779265264838546142869407734801731385038882151575625499763768473474594283095400
+    d = 24905860255725879161128558371435831215619245076168217368168847519448208502647607278010781895992994161387622894243551754908566669657528550240407738974604099075717750167527536701335931161313935177709426888586620163469122180790593518153401412904839522602020213691084940505135564165734707633891419802212150312673
+    num = convert_message(plaintext, alpha, m)
+    encrypted = encrypt_num(num,e,m)
+    print(encrypted)
+    decrypted = decrypt_num(encrypted, d, m)
+    print(decrypted)
+    message = convert_num(decrypted, alpha, m)
+    print(message)
     
 
 main()
