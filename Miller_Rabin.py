@@ -50,6 +50,7 @@ def m_r_trial(n, s, d):
         x = pow(x, 2, n)
     return False
 
+
 def m_r(n, k):
     d = n - 1
     s = 0
@@ -61,24 +62,25 @@ def m_r(n, k):
             return False
     return True
 
+
 def pick_primes(e, diff):
     prime_list = []
     start = random.randrange(2 ** (e - 1), 2 ** e)
     while len(prime_list) < 2:
-        if start > 2**e:
+        if start > 2 ** e:
             if len(prime_list) == 0:
                 start = random.randrange(2 ** (e - 1), 2 ** e)
             else:
-                start = random.randrange(start-diff, start + diff)
+                start = random.randrange(start - diff, start + diff)
         if m_r(start, 10):
             if len(prime_list) == 0:
                 prime_list.append(start)
-                start = random.randrange(start-diff, start + diff)
+                start = random.randrange(start - diff, start + diff)
             else:
-                if abs(prime_list[0]-start) <= diff and prime_list[0] - start != 0:
+                if abs(prime_list[0] - start) <= diff and prime_list[0] - start != 0:
                     prime_list.append(start)
                 else:
-                    start = random.randrange(start-diff, start + diff)
+                    start = random.randrange(start - diff, start + diff)
         start += 1
     return prime_list
 
@@ -202,16 +204,15 @@ def main():
     print(factorint(2 ** 20 + 1))
     run_multiple_trials_primefac(40) #40: .001025, 1.2444
     """
+    """
     arr = pick_primes(511, 10**2)
     print(arr)
     n = arr[0] * arr[1]
     print(n)
     print(arr[0] - arr[1])
     factor_start = time.time()
-    print(factorint(n))
-    factor_end = time.time()
-    factor_time = factor_end - factor_start
-    print(factor_time)
+    """
+    print(factorint(3667934652523))
 
 
 main()

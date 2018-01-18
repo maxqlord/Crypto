@@ -4,6 +4,17 @@ import random
 def c2i(c, alphabet):
     return alphabet.find(c)
 
+def prepare_string(s, alphabet):
+
+    for char in s:
+        if char not in alphabet:
+            s.replace(char, '')
+    s.replace(' ','')
+    s = ''.join(s.split())
+    print(s)
+    return s
+
+
 def i2c(i, alphabet):
     return alphabet[i]
 
@@ -87,6 +98,7 @@ def convert_message(plaintext, alpha, m):
     while len(alpha) ** power < m:
         power += 1
     power -= 1
+    print(power)
     while len(plaintext) % power != 0:
         plaintext+="Z"
 
@@ -94,7 +106,7 @@ def convert_message(plaintext, alpha, m):
     num_array = []
     for i in range(0,len(plaintext),power):
         plain_array.append(plaintext[i:i+power])
-    #print(plain_array)
+    print(plain_array)
     i = power - 1
     for word in plain_array:
         
@@ -136,68 +148,47 @@ def convert_num(decrypted, alpha, m):
             num //= len(alpha)
         message += string_section[::-1]
     return message
-
+                           
 
 def main():
-    #modinv(85,331)
-
-    m = 157188310234238919098913683
-    totient = 157188310234213545456623160
-    e = 65537
-    d = 100987439193303955497674873
+    #2082181,1761583
+    #p = pick_primes(511)  #pick primes between 2^511 and 2^512
+    p = [12146506381645834038938637694315560145605522481099001678525961130513503330983463286913894837422547560452046476688310536561557005074571465528726771144222297, 6841181471228144056720961233011919562929461148315947269150349289240990263876119140774193696991680295609812474830147505476097737728291793488537259523362993]
+    eckel_mod = 2494279923802253606287472092668310204875649561581672691813431640440219048972006082731965879
+    m = make_m(p[0],p[1]) #multiply
+    totient = totient_m(p[0],p[1]) #calculate totient from primes
+    e = 65537 #exponent
+    d = solve_d(e, totient) #calculate d
+    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ., []0123456789"
+    #print(m)
+    #print(totient)
+    #print(e)
+    #print(d)
+    #plaintext = "RSA ENCRYPTION IS NAMED AFTER RON RIVEST ADI SHAMIR AND LEONARD ADLEMAN"
+    #plaintext = prepare_string(plaintext, alpha)
+    #num = convert_message(plaintext, alpha, m)
+    #print(num)
+    #encrypted = encrypt_num(num,e,m)
+    #print(encrypted)
+    encrypted1 = [27529222289130396982441972178167156131188390270854605803088482820364727777356806293149110424664547444829506048862681707047361447940307458528855188797640951349314273871265869613531475173199205446725064541554710160734703958937428787702631909934402384936987117450673463038491985907253183292938459387572382618320]
+    encrypted2 = [51067169418462057946035271407596584206898470229948837025243238360682207489049940521332316064501444037312305552752324515016504618449765390427754168876074131879784613096721414049832244807553779598060039598331370583030202390206371995360432749375936016189125266198408794541779708034026032700137396253674599089757]
+    decrypted1 = decrypt_num(encrypted1, d, m)
+    decrypted2 = decrypt_num(encrypted2, d, m)
+    print(decrypted1)
+    print(decrypted2)
+    message1 = convert_num(decrypted1, alpha, m)
+    message2 = convert_num(decrypted2, alpha, m)
+    print(message1)
+    print(message2)
+    signature1 = [129348710293561219045692384213098475065291837410293856104574368752354612394871029586108276]
+    signature2 = [786455771834685379588950282669850118588542062416352994035757229411495455300397962388489222]
+    decodedsig1 = decrypt_num(signature1, e, eckel_mod)
+    decodedsig2 = decrypt_num(signature2, e, eckel_mod)
+    messagesig1 = convert_num(decodedsig1, alpha, eckel_mod)
+    messagesig2 = convert_num(decodedsig2, alpha, eckel_mod)
+    print(messagesig1)
+    print(messagesig2)
     
-    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    plaintext = "ALLWORKANDNOPLAYMAKESJACKADULLBOY"
-
-    num = convert_message(plaintext, alpha, m)
-    encrypted = encrypt_num(num,e,m)
-    print(encrypted)
-    decrypted = decrypt_num(encrypted, d, m)
-    print(decrypted)
-    message = convert_num(decrypted, alpha, m)
-    print(message)
-
-    
-    '''
-    p = pick_primes(511)
-    m = make_m(p[0],p[1])
-    totient = totient_m(p[0],p[1])
-    e = pick_e(m)
-    d = solve_d(e, totient)
-    
-    alpha = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz.;-, !'"
-    plaintext = "I'm writing college essays and watching Black Mirror on Netflix."
-
-    
-    #p = pick_primes(511)
-    m = 147690143426417720543026043890448472042375285573365468767128662033037446713246419100204917883446300400801225405192554010954725249626347314234029446068634707387105420955618605845881594400970904496218962357799602434736918859856803813645781043520129383769019885018939343481635017846708963422603112278784470086259
-    e = 65537#pick_e(m)
-    num = convert_message(plaintext, alpha, m)
-    encrypted = encrypt_num(num,e,m)
-    print(encrypted)
-    message = convert_num(decrypted, alpha, m)
-    d = solve_d(e,totient)
-    print(m)
-    print("\n\n\n")
-    print(e)
-    print("\n\n\n")
-    print(p[0])
-    print(p[1])
-    print("\n\n\n")
-    print(totient)
-    print("\n\n\n")
-    print(d)
-    '''
-    '''
-    encrypted = [13295204865947947337216471847293007631528873035414398480506563790198695342888260212621615639305361217033501296101494731427430550204158139173864088086067265788380359366632277665231438588940093383879519630716707555751279405541391956175826745433285216935873707515307071052458716103755683084481823974185813677135]
-
-    decrypted = decrypt_num(encrypted, d, m)
-    print(decrypted)
-    
-    print(message)
-    '''
 
 
 main()
-    
-    
