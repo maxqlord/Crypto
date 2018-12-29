@@ -29,7 +29,6 @@ def railfence_encode(plaintext, alpha):
     return plaintext
 
     
-    #if x is even it ends in middle
 
 def main():
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

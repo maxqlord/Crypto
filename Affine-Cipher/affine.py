@@ -101,20 +101,10 @@ def coefficients(plaintext, ciphertext, alpha):
 
     
 def main():
-    #alpha2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?,."
-    #print(affine_encode("GOODMORNING!", alpha, 7, 8))
-    #print(affine_decode("K003M0HTYTKU", alpha, 7, 8))
-    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    #print("HELLOWORLD")
-    #print(affine_bigraph_encode("HELLOWORLD", alpha, 7, 8))
-    #print(affine_bigraph_decode("YKCHAGYXAD", alpha, 7, 8))
-    #table()
-    
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     print(affine_decode("FYGTGXKVYNPEPSXGLIEDQYWJLEIGWCQYTHQJQCPYLWPYCHQDY", alpha, 11, 6))
     print(affine_decode("SXQAHKWCEKYTBKTFFQWGBTESOHVYASSTKDSOXVBQHNHQYYHUSXTBQYKXV", alpha, 21, 10))
     print(affine_decode("XEIACKZMPOWBYTYWYVOFTYTERYWXABKPAUYRGTPOUBARGKQM", alpha, 9, 4))
-
     print(affine_bigraph_encode("BOMBOGENESIS", alpha, 375, 114))
     print(affine_bigraph_decode("SSPXYOPX", alpha, 343, 31))
     print(bigraph_coefficients("EARLYDECISION","SWAPQNWQOUHGJF",alpha))
